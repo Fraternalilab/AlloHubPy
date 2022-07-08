@@ -2,7 +2,6 @@ import numpy as np
 from math import floor
 from MIblock import MIBlock
 from _mi_block.lib import wrap_mi_block
-from _mi_blockrew.lib import wrap_mi_blockrew
 from cffi import FFI
 """
 Holds a SA trajectory and splices them in blocks and calculates the MI
