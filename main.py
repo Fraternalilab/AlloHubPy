@@ -34,7 +34,7 @@ def main(in_files, block_size, processes):
             #mi_tr.plot_mi()
 
     print("Eigen systems computed")
-    ov = Overlap(results, ergodicity=False, ev_list=[0])
+    ov = Overlap(results, ergodicity=False, ev_list=[0,1,2])
     ov.fill_overlap_matrix()
     ov.compute_similarities()
     ov.plot_overlap()
