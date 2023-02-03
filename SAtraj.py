@@ -58,7 +58,7 @@ class SAtraj:
         ffi = FFI()
         # Initialize memory holders
         mi_array = np.zeros(int((length * (length - 1))/2), dtype=np.float64)
-        md_block = np.zeros(int(length * depth), dtype=np.int)
+        md_block = np.zeros(int(length * depth), dtype=int)
         # Cast initialized arrays into memory
         c_md_block = ffi.cast("int *", ffi.from_buffer(md_block))
         c_mi_array = ffi.cast("double *", ffi.from_buffer(mi_array, require_writable=True))
