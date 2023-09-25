@@ -13,8 +13,7 @@ class SAtraj:
                     "K":10, "L":11, "M":12, "N":13, "O":14, "P":15, "Q":16, "R":17, "S":18,
                     "T":19, "U":20, "V":21, "W":22, "X":23, "Y":24}
 
-    def __init__(self, sa_file, block_size):
-        self.SA_file = sa_file
+    def __init__(self, block_size):
         self.b_size = block_size
         self.length = 0
         # Holds the trajectory in text format
@@ -23,16 +22,31 @@ class SAtraj:
         self.int_traj = np.array([])
         # Holds MI matrices objects
         self.mi_traj = []
-        self.read_sa()
 
-    def read_sa(self):
+
+    def compute_average(self):
+        return np.mean(self.mi_traj)
+    
+    def split(self, num):
+        trajs = []
+        splited_text = np.array_split(self.text_traj, num)
+        splited_int_traj = np.array_split(self.int_traj, num)
+        for i in range(num):
+            new_traj = SAtraj(self.b_size)
+            new_traj.int_traj = splited_int_traj[i]
+            new_traj.text_traj = splited_text[i]
+            trajs.append(new_traj)
+        return trajs
+
+
+    def read_sa(self, sa_file):
         """
         Reads SA trajectory file and encodes it into ints
         :return:
         """
         int_traj = []
         n_lines = 0
-        with open(self.SA_file, "r") as inn:
+        with open(sa_file, "r") as inn:
             for line in inn:
                 line = line.rstrip()
                 if not line.startswith(">"):
