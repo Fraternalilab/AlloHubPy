@@ -25,7 +25,7 @@ class SAtraj:
 
 
     def compute_average(self):
-        return np.mean(self.mi_traj)
+        return np.mean(np.array([x.mi_matrix for x in self.mi_traj]), axis=0)
     
     def split(self, num):
         trajs = []
@@ -56,7 +56,7 @@ class SAtraj:
                     self.text_traj.append(line)
                     for char in line:
                         int_traj.append(self.char2int_map[char])
-        self.int_traj = np.ndarray(buffer=np.array(int_traj), shape=(n_lines, self.length), dtype=np.int)
+        self.int_traj = np.ndarray(buffer=np.array(int_traj), shape=(n_lines, self.length), dtype=int)
 
 
     @staticmethod
@@ -92,7 +92,7 @@ class SAtraj:
         Encodes all the blocks and creates MI objects
         :return:
         """
-        print("ENCODING TRAJECTORY %s" % self.SA_file)
+        print("ENCODING TRAJECTORY")
         rango = int(floor(len(self.text_traj)/self.b_size))
         if rango == 0:
             rango = 1
@@ -105,7 +105,7 @@ class SAtraj:
                                                  self.b_size), len(self.text_traj[0]))
 
             self.mi_traj.append(mi_block)
-        print("TRAJECTORY %s  COMPLETED" % self.SA_file)
+        print("TRAJECTORY COMPLETED")
 
 
 
