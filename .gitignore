@@ -1,0 +1,27 @@
+# Ignore build directories
+/build/
+/dist/
+/*.egg-info/
+
+# Ignore compiled C files
+*.o
+*.so
+*.a
+*.dll
+*.lib
+*.exe
+
+# Ignore Cython-generated C/C++ files
+*_cython.c
+*.cpp
+*.pyd
+
+# Ignore cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore temporary files
+*.log
+*.tmp
+.DS_Store
