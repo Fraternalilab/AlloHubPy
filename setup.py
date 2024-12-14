@@ -30,6 +30,5 @@ setup(
     zip_safe=False,
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
-    url="https://github.com/Fraternalilab/AlloHubPy",
-    packages=find_packages(),
+    url="https://github.com/Fraternalilab/AlloHubPy"
 )
