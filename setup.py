@@ -26,7 +26,7 @@ setup(
     description="Allostery signal detection analysis using a information theory framework.",
     packages=find_packages(),
     ext_modules=cythonize(extensions),
-    install_requires=["numpy", "pandas", "seaborn", "matplotlib", "scipy", "statsmodels", "networkx", "mdtraj", "esm-fine", "torch", "scipy", "cffi"],           # Other dependencies
+    install_requires=["numpy", "pandas", "seaborn", "matplotlib", "scipy", "statsmodels", "networkx", "mdtraj", "fair-esm", "torch", "scipy", "cffi", "mini3di"],           # Other dependencies
     zip_safe=False,
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
