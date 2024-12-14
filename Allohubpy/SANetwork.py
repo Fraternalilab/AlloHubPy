@@ -98,7 +98,7 @@ class SANetWork:
         mi_distribution = np.array(mi_distribution)
 
         # Compute the Nth percentil
-        threshold_p = np.percentile(mi_distribution, 100 - threshold)  # 80th percentile
+        threshold_p = np.percentile(mi_distribution, 100 - threshold) 
 
         # Find indices of points in the top percentile chosen
         indices_f = np.where(mi_distribution >= threshold_p)[0]  # Indices of elements meeting the condition
