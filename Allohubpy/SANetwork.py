@@ -59,18 +59,17 @@ class SANetWork:
             matrix (np.array): Numpy matrix with the distances between C alphas
             fragment_size (int): Number of amino acids that make one fragment.
         """
-
         self.distance = matrix
         self._process_distance(fragment_size)
 
 
-    def create_graph(self, pval_threshold):
+    def create_graph(self, threshold):
         """
         Creates a graph with the nodes = the fragments ids and the edges = 1 - mutual information.
         Connections further than self.distance_limit or that are not significant given the selected alpha are removed.
 
         Args:
-            pval_threshold (float): Significance threshold to add the connection to the network
+            threshold (float): top % of mi signal to keep
         """
 
         weights = 1 - self.mean_mi.mi_matrix
@@ -82,53 +81,32 @@ class SANetWork:
         # Create indexes for each pair interaction
         index_matching = [(ii, jj) for ii in range(self.mean_mi.mi_matrix.shape[0]) 
                           for jj in range(self.mean_mi.mi_matrix.shape[1])]
+
+        mi_distribution = []
+
         # Filter out symetric cases and fragments with themselves
-        indexes_to_remove = []
         indexes_to_keep = []
         for idx, idx_pair in enumerate(index_matching):
-            if idx_pair[0] >= idx_pair[1]:
-                indexes_to_remove.append(idx)
-            else:
+            if idx_pair[0] < idx_pair[1]:
                 indexes_to_keep.append(idx)
+                mi_distribution.append(self.mean_mi.mi_matrix[idx_pair[0]][idx_pair[1]])
+
         index_matching = [index_matching[item] for item in indexes_to_keep]
+        index_matching = np.array(index_matching)
 
-        # Flatten out the mi matrices and remove non relevant points
-        flat_mi = [m.mi_matrix.flatten() for m in self.traj_list]
-        flat_mi = np.array(flat_mi)
-        flat_mi_temp = []
-        for m in flat_mi:
-            flat_mi_temp.append(np.delete(m, indexes_to_remove))
-        flat_mi = np.array(flat_mi_temp)
+        # create a numpy array 
+        mi_distribution = np.array(mi_distribution)
 
-        # Loop through each fragment and compute p values
-        p_values = []
-        to_pop = []
-        for f_index in range(len(index_matching)):
-            pair_c = flat_mi[:, f_index]
-            _, p_value = ttest_1samp(pair_c, 0, alternative='greater')
-            if np.isnan(p_value) or np.isinf(p_value):
-                to_pop.append(f_index)
-            else:
-                p_values.append(p_value)
-        index_matching = [item for idx, item in enumerate(index_matching) if idx not in to_pop]
-        rejected, corrected_pvalues, _, _  = multipletests(p_values, method='fdr_bh', alpha=pval_threshold)
-        
-        # Filter using multiple test correction
-        rejected_matching = [t for t, r in zip(index_matching, rejected) if not r]
-        
+        # Compute the Nth percentil
+        threshold_p = np.percentile(mi_distribution, 100 - threshold) 
 
-        # Set the distance of those points to -1 so that they are not used 
-        for pair in rejected_matching:
-            self.distance[pair[0]][pair[1]] = -1
-            self.mean_mi.mi_matrix[pair[0]][pair[1]] = 0.0
-                   
+        # Find indices of points in the top percentile chosen
+        indices_f = np.where(mi_distribution >= threshold_p)[0]  # Indices of elements meeting the condition
+
         # Add edges with weights only for nodes that are in contact
-        for i in range(len(node_ids)):
-            for j in range(i+1, len(node_ids)):
-                id1 = node_ids[i]
-                id2 = node_ids[j]
-                if self.distance[id1][id2] < self.distance_limit:
-                    self.graph.add_edge(id1, id2, weight=weights[i,j])
+        for i, j in index_matching[indices_f]:
+            if self.distance[i][j] < self.distance_limit:
+                self.graph.add_edge(i, j, weight=weights[i,j])
 
 
     def get_graph(self):
@@ -161,7 +139,7 @@ class SANetWork:
             df (pandas DataFrame): Data frame with columns ['fragments', 'Centrality']
         """
 
-        eigen_centrality = nx.eigenvector_centrality(self.graph)
+        eigen_centrality = nx.eigenvector_centrality(self.graph, max_iter=500)
         df = pd.DataFrame(list(eigen_centrality.items()), columns=['fragments', 'Centrality'])
         return df
     
