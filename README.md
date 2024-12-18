@@ -7,6 +7,10 @@ The folder notebooks contains examples for how to run the package with some samp
 
 ## Installation
 
+Note: The user needs to have installed the GSL library
+In ubuntu one can use: sudo apt-get install libgsl-dev
+
+
 The package can be installed through pip with pip install Allohubpy.
 To install all the required packages: pip install -r requirements.txt
 
