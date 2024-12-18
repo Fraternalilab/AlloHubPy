@@ -10,8 +10,7 @@ extensions = [
         name="Allohubpy.Allohubpy_cython",       # Module name
         sources=["Allohubpy/Allohubpy_cython.pyx"],  
         include_dirs=[np.get_include()],    
-        language="c",
-        language_level=3,
+        language="c"
     )
 ]
 
@@ -21,12 +20,13 @@ setup(
     version="1.0",    
     author="Oriol",
     author_email="o.carmona@ucl.ac.uk",
-    python_requires=">=3.10",
+    python_requires=">=3.8",
     cffi_modules=["Allohubpy/src/kabsch_extension_build.py:ffibuilder","Allohubpy/src/encodeframe_extension_build.py:ffibuilder"],
     description="Allostery signal detection analysis using a information theory framework.",
     packages=find_packages(),
-    ext_modules=cythonize(extensions),
-    install_requires=["numpy", "pandas", "seaborn", "matplotlib", "scipy", "statsmodels", "networkx", "mdtraj", "fair-esm", "torch", "scipy", "cffi", "mini3di"],           # Other dependencies
+    ext_modules=cythonize(extensions, language_level=3),
+    setup_requires=['Cython'],
+    install_requires=["numpy", "cython", "pandas", "seaborn", "matplotlib", "scipy", "statsmodels", "networkx", "mdtraj", "fair-esm", "torch", "cffi", "mini3di"],           # Other dependencies
     zip_safe=False,
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",

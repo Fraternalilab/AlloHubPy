@@ -1,0 +1,7 @@
+include Allohubpy/Allohubpy_cython.pyx
+include Allohubpy/src/kabsch_extension_build.py
+include Allohubpy/src/encodeframe_extension_build.py
+include Allohubpy/src/kabsch.c
+include Allohubpy/src/kabsch.h
+include Allohubpy/src/encodeframe.h
+include Allohubpy/src/encodeframe.c

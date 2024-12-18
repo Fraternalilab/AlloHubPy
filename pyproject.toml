@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools", "cython", "cffi", "numpy"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "Allohubpy"
+version = "1.0.0"
+dependencies = [
+"pandas", "seaborn", "matplotlib", "scipy", "cffi", "tqdm", "statsmodels", "networkx", "mdtraj", "fair-esm", "torch", "mini3di"
+]
+requires-python = ">=3.8"
+authors = [
+  {name = "Oriol Gracia", email = "o.carmona@ucl.ac.uk"},
+  {name = "Jens Kleinjung", email = "jkleinj@gmail.com"}
+]
+maintainers = [
+  {name = "Oriol Gracia", email = "o.carmona@ucl.ac.uk"}
+]
+description = "Package to analyze allosteric signal from MD simulation using Information Theory"
+readme = "README.md"
+license = {file = "LICENSE"}
+classifiers = [
+  "Development Status :: Beta",
+  "Programming Language :: Python"
+]
+
+[project.urls]
+Repository = "https://github.com/Fraternalilab/AlloHubPy.git"
+"Bug Tracker" = "https://github.com/Fraternalilab/AlloHubPy/issues"
+

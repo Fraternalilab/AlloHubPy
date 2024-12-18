@@ -165,13 +165,13 @@ class SAtraj:
 
     def compute_entropy(self, bootstrap=0):
         """
-        Computes the shanon entropy for each alphabet fragment
+        Computes the shannon entropy for each alphabet fragment
 
         Args:
             bootstrap (int): Number of samples to create to estimate statistics
 
         Returns:
-            List containing the shanon entropies for each position or list of list if bootstrap !=0
+            List containing the shannon entropies for each position or list of list if bootstrap !=0
         """
         results = []
         iterations = 1
@@ -200,7 +200,7 @@ class SAtraj:
         Computes the probabilities for each letter given an array
 
         Args:
-            column (np.array): data array for which the shanon entropy should be computed.
+            column (np.array): data array for which the shannon entropy should be computed.
 
         Returns:
             np.array with the probabilities for each possible fragment

@@ -6,12 +6,12 @@ import networkx as nx
 
 # Example plots to use in analysis or to use as inspiration for personalized plots for Allohubpy
 
-def plot_shanon_entropy(entropy, action="save", ylim=(0,4), name="SA_shanon_entropy.png"):
+def plot_shannon_entropy(entropy, action="save", ylim=(0,4), name="SA_shannon_entropy.png"):
     """
-    Plots the shanon entropies
+    Plots the shannon entropies
 
     Args:
-        entropy (np.array or list): Shanon entropies for each fragment. 
+        entropy (np.array or list): shannon entropies for each fragment. 
         action (str): What to do with the plot, 'save' for saving it, 'show' for displaying it
         ylim (tuple of floats): Maximum and minimum value for the y axis.
         name (str): name to use to save the plot, including format.
@@ -39,7 +39,7 @@ def plot_shanon_entropy(entropy, action="save", ylim=(0,4), name="SA_shanon_entr
     plt.close()
 
 
-def plot_shanon_entropy_sd(entropy_arrays, ylim = (0,4), action="save", name="SA_shanon_entropy.png"):
+def plot_shannon_entropy_sd(entropy_arrays, ylim = (0,4), action="save", name="SA_shannon_entropy.png"):
     """
     Plots the Shannon entropies for multiple entropy arrays, with error shade representing the 
     standard deviation of the mean at each fragment index.

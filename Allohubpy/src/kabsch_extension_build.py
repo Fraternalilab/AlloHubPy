@@ -5,7 +5,8 @@ ffibuilder = FFI()
 
 ffibuilder.cdef("double wrmsd_kabsch(unsigned int size,  float (*Xarray)[3], float (*Yarray)[3]);")
 
-src_dir = os.path.abspath("Allohubpy/src")
+#src_dir = os.path.abspath("Allohubpy/src")
+src_dir = os.path.join("Allohubpy", "src")
 ffibuilder.set_source(
     "Allohubpy._kabsch",
     """#include "kabsch.h" """,
