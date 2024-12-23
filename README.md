@@ -27,7 +27,6 @@ pip install -r requirements.txt
 The package can be installed through pip with:
 ```
 pip install git+https://github.com/Fraternalilab/AlloHubPy.git
-pip install Allohubpy (pending)
 ```
 
 ### Method 2: *via* Python compilation 
