@@ -19,16 +19,15 @@ In Ubuntu one can use:
 ```
 sudo apt-get install libgsl-dev
 ```
-
+(Optional) install all the required packages manually:
+```
+pip install -r requirements.txt
+```
 ### Method 1: *via pip*
 The package can be installed through pip with:
 ```
-pip install Allohubpy
-```
-
-To install all the required packages:
-```
-pip install -r requirements.txt
+pip install git+https://github.com/Fraternalilab/AlloHubPy.git
+pip install Allohubpy (pending)
 ```
 
 ### Method 2: *via* Python compilation 
