@@ -316,54 +316,48 @@ def plot_updownregulation(updown_regulation_df, fold_threshold, pvalue_threshold
     plt.close()
 
 
-def plot_SA_graph(graph, start_nodes, end_nodes, action="save", name="SA_graph.png"):
+def plot_SA_graph(graph, start_nodes, end_nodes, action="save", minmax=[], name="SA_graph.png"):
     """
     Plots the fragment graph with colored nodes, red for ending nodes, blue for start nodes, green the rest. 
-    The edges thickness is proportional to their weight. 
+    The edges' thickness is inversely proportional to their normalized weight.
 
     Args:
-        graph (natworkx graph): networkx graph to plot.
-        start_nodes (list ints): Starting nodes. That is list of nodes to color differently (blue).
-        end_nodes (list ints): Ending nodes. That is list of nodes to color differently (red).
-        action (str): What to do with the plot, 'save' for saving it, 'show' for displaying it.
-        name (str): name to use to save the plot, including format.
+        graph (networkx graph): NetworkX graph to plot.
+        start_nodes (list of ints): Starting nodes (colored blue).
+        end_nodes (list of ints): Ending nodes (colored red).
+        action (str): 'save' to save the plot, 'show' to display it.
+        name (str): Filename for saving the plot, including format.
     """
+    node_colors = ["red" if node in end_nodes else "blue" if node in start_nodes else "green" for node in graph.nodes()]
     
-    node_colors = []
-    for node in graph.nodes():
-        if node in end_nodes:
-            node_colors.append('red')
-        elif node in start_nodes:
-            node_colors.append('blue')
-        else:
-            node_colors.append('green')
-            
-    # Define edge thickness based on weight
-    plt.figure(dpi=1000)
-    
+    # Extract edge weights
     edge_weights = nx.get_edge_attributes(graph, 'weight')
-    edge_thickness = [weight for _, _, weight in graph.edges(data='weight')]
-   
-    # Create the graph layout
+    edge_thickness = list(edge_weights.values())
+    
+    # Normalize edge thickness (inverting scale: lower weights = thicker edges)
+    if edge_thickness:
+        if minmax:
+            min_w, max_w = minmax
+        else:
+            min_w, max_w = min(edge_thickness), max(edge_thickness)
+        if min_w != max_w:
+            edge_thickness = [0.5 + 4.5 * (max_w - w) / (max_w - min_w) for w in edge_thickness]
+        else:
+            edge_thickness = [2.5] * len(edge_thickness)  # Assign a default value if all weights are equal
+    
+    # Graph layout
+    print(min_w, max_w)
     pos = nx.spring_layout(graph)
-
-    # Draw nodes
+    
+    plt.figure(dpi=1000)
     nx.draw_networkx_nodes(graph, pos, node_color=node_colors, node_size=250)
-    
-    # Draw edges with thickness proportional to weight
     nx.draw_networkx_edges(graph, pos, width=edge_thickness, edge_color='black')
-    
-    # Draw labels for nodes
     nx.draw_networkx_labels(graph, pos, font_color='white', font_weight='bold', font_size=6)
-
-    # Draw edge labels (e.g., weights)
-    #nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_weights, font_size=6, font_color='black')
-
-    # Display or save the plot
+    
+    # Save or show plot
     if action == "save":
         plt.savefig(name, dpi=1000)
     else:
         plt.show()
-
-    # clean up
+    
     plt.close()
