@@ -9,17 +9,17 @@ def window_mi_to_residue_mi(
     eps: float = 1e-12,
 ) -> np.ndarray:
 
-	"""
-	Project an MI matrix between overlapping windows (fragments) to a residue-residue MI matrix.
+    """
+    Project an MI matrix between overlapping windows (fragments) to a residue-residue MI matrix.
 
-	Assumptions:
-		- Windows are consecutive and overlapping by 3 residues (stride 1).
-		- Window i covers residues [i, i+1, ..., i+window_len-1].
-		- mi_win is (M x M) where M = N_res - window_len + 1.
+    Assumptions:
+        - Windows are consecutive and overlapping by 3 residues (stride 1).
+        - Window i covers residues [i, i+1, ..., i+window_len-1].
+        - mi_win is (M x M) where M = N_res - window_len + 1.
 
-	Returns:
-	mi_res: (N_res x N_res) residue-level MI matrix.
-	"""
+    Returns:
+    mi_res: (N_res x N_res) residue-level MI matrix.
+    """
 
     mi_win = np.asarray(mi_win, dtype=float)
     if mi_win.ndim != 2 or mi_win.shape[0] != mi_win.shape[1]:

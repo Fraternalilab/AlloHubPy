@@ -174,104 +174,183 @@ class Overlap:
         else:
             return 1.0
         
+#    def separate_groups(self, traj_mapping, splitting):
+#        # split them by groups
+#        mapping_dict = {}
+#        for i,traj in enumerate(self.traj_list):
+#            if splitting:
+#                for mi_matrix in traj:
+#                    mapping_dict.setdefault(traj_mapping[i], []).append(mi_matrix)
+#            else:
+#                average_mi = np.sum(traj)/len(traj)
+#                mapping_dict.setdefault(traj_mapping[i], []).append(average_mi)
+#
+#        return mapping_dict
+
     def separate_groups(self, traj_mapping, splitting):
-        # split them by groups
         mapping_dict = {}
-        for i,traj in enumerate(self.traj_list):
+
+        for i, traj in enumerate(self.traj_list):
+            group = traj_mapping[i]
+
             if splitting:
-                for mi_matrix in traj:
-                    mapping_dict.setdefault(traj_mapping[i], []).append(mi_matrix)
+                for mi_block in traj:
+                    mapping_dict.setdefault(group, []).append(mi_block)
             else:
-                average_mi = np.sum(traj)/len(traj)
-                mapping_dict.setdefault(traj_mapping[i], []).append(average_mi)
+                average_mi = np.mean(
+                    [mi_block.get_mi_matrix() for mi_block in traj],
+                    axis=0
+                )
+                mapping_dict.setdefault(group, []).append(average_mi)
 
         return mapping_dict
 
 
     def updown_regulation(self, traj_mapping, splitting=True):
-
-        # Splitt trajectories and MI blocks into their conditions based on traj_mapping
         results = {}
         mapping = self.separate_groups(traj_mapping, splitting)
         trajectory_groups = sorted(mapping.keys())
-        # For each condition par fetch trajectories of each group, compute avg and fold change
+
         for i in range(len(trajectory_groups)):
-            for j in range(i+1, len(trajectory_groups)):
+            for j in range(i + 1, len(trajectory_groups)):
                 g1 = trajectory_groups[i]
                 g2 = trajectory_groups[j]
-                # Compute an average for the whole condition 1 
-                m1 = np.sum(mapping[g1])/len(mapping[g1])
-                # Compute an average for the whole condition 2 
-                m2 = np.sum(mapping[g2])/len(mapping[g2])
-                # flatten the matrices
-                flat_m1_avg = m1.mi_matrix.flatten()
-                flat_m2_avg = m2.mi_matrix.flatten()
-                flat_m1 = [m.mi_matrix.flatten() for m in mapping[g1]]
-                flat_m2 = [m.mi_matrix.flatten() for m in mapping[g2]]
-                flat_m1 = np.array(flat_m1)
-                flat_m2 = np.array(flat_m2)
-                # compute log2 fold change for all fragments pairs
-                log2_fold_change = np.log2(flat_m1_avg/flat_m2_avg)
-                index_matching = [(ii, jj) for ii in range(m1.mi_matrix.shape[0]) for jj in range(m1.mi_matrix.shape[1])]
-                # Filter out symetric cases and fragments with themselves
-                indexes_to_remove = []
-                indexes_to_keep = []
-                for idx, idx_pair in enumerate(index_matching):
-                    if idx_pair[0] >= idx_pair[1]:
-                        indexes_to_remove.append(idx)
-                    else:
-                        indexes_to_keep.append(idx)
-                index_matching = [index_matching[item] for item in indexes_to_keep]
-                log2_fold_change = np.delete(log2_fold_change, indexes_to_remove)
-                flat_m1_temp = []
-                for m in flat_m1:
-                    flat_m1_temp.append(np.delete(m, indexes_to_remove))
-                flat_m2_temp = []
-                for m in flat_m2:
-                    flat_m2_temp.append(np.delete(m, indexes_to_remove))
-                flat_m1 = np.array(flat_m1_temp)
-                flat_m2 = np.array(flat_m2_temp)
-                #Compute statistics and pvalue adjustment
+
+                # Convert stored objects to matrices
+                mats1 = [x.mi_matrix if hasattr(x, "mi_matrix") else x for x in mapping[g1]]
+                mats2 = [x.mi_matrix if hasattr(x, "mi_matrix") else x for x in mapping[g2]]
+
+                mats1 = np.array(mats1, dtype=float)
+                mats2 = np.array(mats2, dtype=float)
+
+                # Average matrix per condition
+                m1 = np.mean(mats1, axis=0)
+                m2 = np.mean(mats2, axis=0)
+
+                # Flatten averaged matrices
+                flat_m1_avg = m1.flatten()
+                flat_m2_avg = m2.flatten()
+
+                # Flatten all replicate matrices
+                flat_m1 = mats1.reshape(mats1.shape[0], -1)
+                flat_m2 = mats2.reshape(mats2.shape[0], -1)
+
+                # Safe log2 fold change
+                with np.errstate(divide="ignore", invalid="ignore"):
+                    log2_fold_change = np.log2(flat_m1_avg / flat_m2_avg)
+
+                nrows, ncols = m1.shape
+                index_matching = [(ii, jj) for ii in range(nrows) for jj in range(ncols)]
+
+                # Keep only upper triangle, exclude diagonal
+                indexes_to_keep = [
+                    idx for idx, (ii, jj) in enumerate(index_matching) if ii < jj
+                ]
+                index_matching = [index_matching[idx] for idx in indexes_to_keep]
+
+                log2_fold_change = log2_fold_change[indexes_to_keep]
+                flat_m1 = flat_m1[:, indexes_to_keep]
+                flat_m2 = flat_m2[:, indexes_to_keep]
+
+                # Statistics
                 p_values = []
-                # Loop through each fragment
                 for f_index in range(len(index_matching)):
                     pair_c1 = flat_m1[:, f_index]
                     pair_c2 = flat_m2[:, f_index]
-                    # Perform an independent two-sample t-test
-                    _, p_value = ttest_ind(pair_c1, pair_c2)
+                    _, p_value = ttest_ind(pair_c1, pair_c2, equal_var=False, nan_policy="omit")
                     p_values.append(p_value)
-                # Create a temporal holder for adjusted p values
-                adj_p_values = np.full_like(p_values, 0.0)
-                # Dataframe to hold the information
+
                 df = pd.DataFrame({
-                    "FragmentPairs":index_matching,
+                    "FragmentPairs": index_matching,
                     "log2FoldChange": log2_fold_change,
                     "PValues": p_values,
-                    "AdjustedPValues": adj_p_values
                 })
-                # remove NaNs
+
                 df = df.dropna()
-                
-                # pvalue adjustment
-                _, adj_p_values, _, _ = multipletests(df["PValues"], method='fdr_bh')
-                df["AdjustedPValues"] = adj_p_values
-                # Remove infinite differences
                 df = df[np.isfinite(df["log2FoldChange"])]
+
+                if len(df) > 0:
+                    _, adj_p_values, _, _ = multipletests(df["PValues"], method="fdr_bh")
+                    df["AdjustedPValues"] = adj_p_values
+                else:
+                    df["AdjustedPValues"] = []
+
                 print(df)
-                
-                results[(i,j)] = df
+                results[(g1, g2)] = df
+
         return results
-            
 
 
-
-
-
-
-                
-
-
-
-
-
-
+#    def updown_regulation(self, traj_mapping, splitting=True):
+#
+#        # Splitt trajectories and MI blocks into their conditions based on traj_mapping
+#        results = {}
+#        mapping = self.separate_groups(traj_mapping, splitting)
+#        trajectory_groups = sorted(mapping.keys())
+#        # For each condition par fetch trajectories of each group, compute avg and fold change
+#        for i in range(len(trajectory_groups)):
+#            for j in range(i+1, len(trajectory_groups)):
+#                g1 = trajectory_groups[i]
+#                g2 = trajectory_groups[j]
+#                # Compute an average for the whole condition 1 
+#                m1 = np.sum(mapping[g1])/len(mapping[g1])
+#                # Compute an average for the whole condition 2 
+#                m2 = np.sum(mapping[g2])/len(mapping[g2])
+#                # flatten the matrices
+#                flat_m1_avg = m1.mi_matrix.flatten()
+#                flat_m2_avg = m2.mi_matrix.flatten()
+#                flat_m1 = [m.mi_matrix.flatten() for m in mapping[g1]]
+#                flat_m2 = [m.mi_matrix.flatten() for m in mapping[g2]]
+#                flat_m1 = np.array(flat_m1)
+#                flat_m2 = np.array(flat_m2)
+#                # compute log2 fold change for all fragments pairs
+#                log2_fold_change = np.log2(flat_m1_avg/flat_m2_avg)
+#                index_matching = [(ii, jj) for ii in range(m1.mi_matrix.shape[0]) for jj in range(m1.mi_matrix.shape[1])]
+#                # Filter out symetric cases and fragments with themselves
+#                indexes_to_remove = []
+#                indexes_to_keep = []
+#                for idx, idx_pair in enumerate(index_matching):
+#                    if idx_pair[0] >= idx_pair[1]:
+#                        indexes_to_remove.append(idx)
+#                    else:
+#                        indexes_to_keep.append(idx)
+#                index_matching = [index_matching[item] for item in indexes_to_keep]
+#                log2_fold_change = np.delete(log2_fold_change, indexes_to_remove)
+#                flat_m1_temp = []
+#                for m in flat_m1:
+#                    flat_m1_temp.append(np.delete(m, indexes_to_remove))
+#                flat_m2_temp = []
+#                for m in flat_m2:
+#                    flat_m2_temp.append(np.delete(m, indexes_to_remove))
+#                flat_m1 = np.array(flat_m1_temp)
+#                flat_m2 = np.array(flat_m2_temp)
+#                #Compute statistics and pvalue adjustment
+#                p_values = []
+#                # Loop through each fragment
+#                for f_index in range(len(index_matching)):
+#                    pair_c1 = flat_m1[:, f_index]
+#                    pair_c2 = flat_m2[:, f_index]
+#                    # Perform an independent two-sample t-test
+#                    _, p_value = ttest_ind(pair_c1, pair_c2)
+#                    p_values.append(p_value)
+#                # Create a temporal holder for adjusted p values
+#                adj_p_values = np.full_like(p_values, 0.0)
+#                # Dataframe to hold the information
+#                df = pd.DataFrame({
+#                    "FragmentPairs":index_matching,
+#                    "log2FoldChange": log2_fold_change,
+#                    "PValues": p_values,
+#                    "AdjustedPValues": adj_p_values
+#                })
+#                # remove NaNs
+#                df = df.dropna()
+#                
+#                # pvalue adjustment
+#                _, adj_p_values, _, _ = multipletests(df["PValues"], method='fdr_bh')
+#                df["AdjustedPValues"] = adj_p_values
+#                # Remove infinite differences
+#                df = df[np.isfinite(df["log2FoldChange"])]
+#                print(df)
+#                
+#                results[(i,j)] = df
+#        return results

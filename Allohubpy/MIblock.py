@@ -4,7 +4,7 @@ import numpy as np
 class MIBlock:
 
     
-    def __init__(self, mi_array, length):
+    def __init__(self, mi_array):
         """
         Initializes the handler for handling mutual information matrices.
 
@@ -14,8 +14,8 @@ class MIBlock:
 
         """
 
-        self.length = length
         self.mi_matrix = mi_array
+        self.length = mi_array.shape[0]
         self.eigenvectors = []
         self.eigenvalues = []
         # dictionary that maps the eigenvalues to their eigenvectors
@@ -107,7 +107,7 @@ class MIBlock:
 
     def remove_adjacent_mi(self, wide):
         """
-        Removes MI of fragments that are contiguos to remove bonded effects from the analysis
+        Removes MI of fragments that are contiguous to remove bonded effects from the analysis
 
         Args:
             wide (int): number of fragments around each fragment that need to be set to 0.
@@ -157,7 +157,7 @@ class MIBlock:
     def remove_low(self, point):
         """
         Removes Mi signal of all the points bellow a given threshold.
-        This is used to remove the noise from pairs of fragments whose correlation is not significative
+        This is used to remove the noise from pairs of fragments whose correlation is not significant
 
         Args:
             point (float): minimum number to keep in the mi matrix.
