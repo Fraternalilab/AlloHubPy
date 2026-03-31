@@ -220,18 +220,22 @@ class Overlap:
                 mats1 = [x.mi_matrix if hasattr(x, "mi_matrix") else x for x in mapping[g1]]
                 mats2 = [x.mi_matrix if hasattr(x, "mi_matrix") else x for x in mapping[g2]]
 
+                # example shape: (58, 285, 285); per block MI matrices
                 mats1 = np.array(mats1, dtype=float)
                 mats2 = np.array(mats2, dtype=float)
 
-                # Average matrix per condition
+                # Average matrix per condition; average is over block matrices
+                # example shape: (285, 285)
                 m1 = np.mean(mats1, axis=0)
                 m2 = np.mean(mats2, axis=0)
 
                 # Flatten averaged matrices
+                # example shape: (81225,) ; square matrix as vector
                 flat_m1_avg = m1.flatten()
                 flat_m2_avg = m2.flatten()
 
                 # Flatten all replicate matrices
+                # example shape: (58, 40470); per block upper matrix triangle as vector
                 flat_m1 = mats1.reshape(mats1.shape[0], -1)
                 flat_m2 = mats2.reshape(mats2.shape[0], -1)
 
@@ -252,19 +256,28 @@ class Overlap:
                 flat_m1 = flat_m1[:, indexes_to_keep]
                 flat_m2 = flat_m2[:, indexes_to_keep]
 
-                # Statistics
+                # Statistics over fragment pairs in upper triangle
+                #   for all flattened block matrices
                 p_values = []
+                MI1_mean_values = []
+                MI2_mean_values = []
                 for f_index in range(len(index_matching)):
                     pair_c1 = flat_m1[:, f_index]
                     pair_c2 = flat_m2[:, f_index]
+                    # the t-test is over the two vectors of MI values of block matrices
+                    #   for the given fragment pair given as 'f_index'
                     _, p_value = ttest_ind(pair_c1, pair_c2, equal_var=False, nan_policy="omit")
                     p_values.append(p_value)
-
+                    MI1_mean_values.append(np.mean(pair_c1))
+                    MI2_mean_values.append(np.mean(pair_c2))                    
+                    
                 df = pd.DataFrame({
                     "FragmentPairs": index_matching,
                     "log2FoldChange": log2_fold_change,
                     "PValues": p_values,
-                })
+                    "MIfrag1": MI1_mean_values,
+                    "MIfrag2": MI2_mean_values
+               })
 
                 df = df.dropna()
                 df = df[np.isfinite(df["log2FoldChange"])]
