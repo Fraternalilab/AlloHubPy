@@ -131,7 +131,7 @@ class SAtraj:
                 idx = futures[future]  # Get the index for this future
                 res = future.result()
                 progress_bar.update(1)
-                mi_block = MIBlock(res, len(self.int_traj[0]))
+                mi_block = MIBlock(res)
                 mi_traj[idx] = mi_block  # Store the result at the correct index
         """
         non parallelized approach (kept in since its easier to read)
@@ -142,7 +142,7 @@ class SAtraj:
             f = (i+1) * self.b_size
             block = self.int_traj[b:f,]
             mi_array = calculate_mutual_information(block, len(self.alphabet))
-            mi_block = MIBlock(mi_array, len(self.text_traj[0]))
+            mi_block = MIBlock(mi_array)
 
             mi_traj.append(mi_block)
         """
