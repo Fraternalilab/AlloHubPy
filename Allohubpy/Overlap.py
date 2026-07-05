@@ -65,10 +65,13 @@ class Overlap:
 
     def cluster_overlap(self, distance_threshold=0.99):
         """
-        Compute the clusters base don the overlap of the eigenvectors
-        Returns the labels of the clusters
+        Computes the clusters based on the overlap of the eigenvectors and stores the cluster labels.
+
+        Args:
+            distance_threshold (float): Linkage distance (on the 1 - overlap scale) above which
+                                        clusters are not merged.
         """
-        model = AgglomerativeClustering(metric='precomputed', n_clusters=10, distance_threshold=None, linkage='complete').fit(1.0 - self.overlap_matrix)
+        model = AgglomerativeClustering(metric='precomputed', n_clusters=None, distance_threshold=distance_threshold, linkage='complete').fit(1.0 - self.overlap_matrix)
         self.cluster_labels = model.labels_
 
 
@@ -132,7 +135,7 @@ class Overlap:
                 
                 # save results in matrix
                 result_matrix[i][j] = np.round(block12,4)
-                result_matrix[j][j] = np.round(block12,4)
+                result_matrix[j][i] = np.round(block12,4)
                 result_matrix[i][i] = np.round(block1,4)
                 result_matrix[j][j] = np.round(block2,4)
                 #now update the length of traj 2 start
@@ -158,7 +161,7 @@ class Overlap:
         ev_sum = np.sum([mi_obj1.eigenvalues[ev_list], mi_obj2.eigenvalues[ev_list]])
         term_2 = 0
         for i in range(len(ev_list)):
-            squared_part = np.sqrt(mi_obj1.eigenvalues[i] * mi_obj2.eigenvalues[ev_list])
+            squared_part = np.sqrt(mi_obj1.eigenvalues[ev_list[i]] * mi_obj2.eigenvalues[ev_list])
             d_part = np.einsum('i,ij->j', mi_obj1.eigenvectors[:, evc_list1[i]], mi_obj2.eigenvectors[:, evc_list2])
             d_part = np.power(d_part, 2)
             term_2 += np.sum(squared_part * d_part)

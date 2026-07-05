@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "Allohubpy"
 version = "1.0.0"
 dependencies = [
-"pandas", "seaborn", "matplotlib", "scipy", "cffi", "tqdm", "statsmodels", "networkx", "mdtraj", "fair-esm", "torch", "mini3di"
+"numpy", "pandas", "seaborn", "matplotlib", "scipy", "cffi", "tqdm", "statsmodels", "networkx", "mdtraj", "fair-esm", "torch", "mini3di", "scikit-learn"
 ]
 requires-python = ">=3.8"
 authors = [
@@ -20,11 +20,17 @@ description = "Package to analyze allosteric signal from MD simulation using Inf
 readme = "README.md"
 license = {file = "LICENSE"}
 classifiers = [
-  "Development Status :: Beta",
+  "Development Status :: 4 - Beta",
   "Programming Language :: Python"
 ]
 
 [project.urls]
+Homepage = "https://github.com/Fraternalilab/AlloHubPy"
 Repository = "https://github.com/Fraternalilab/AlloHubPy.git"
 "Bug Tracker" = "https://github.com/Fraternalilab/AlloHubPy/issues"
 
+[tool.setuptools]
+zip-safe = false
+
+[tool.setuptools.packages.find]
+include = ["Allohubpy*"]

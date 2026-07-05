@@ -1,4 +1,5 @@
 import numpy as np
+from Allohubpy.MI_residue_projection import window_mi_to_residue_mi
 
 
 class MIBlock:
@@ -103,6 +104,28 @@ class MIBlock:
         """
 
         return self.mi_matrix
+
+
+    def project_to_residues(self, fragment_size=4, **kwargs):
+        """
+        Projects the fragment-space MI matrix back to residue space.
+
+        The MI matrix is computed in SA fragment space, which is (fragment_size - 1)
+        positions shorter than the residue sequence. This maps the (M x M) fragment
+        matrix onto an (N_res x N_res) residue-level matrix, where
+        N_res = M + fragment_size - 1.
+
+        Args:
+            fragment_size (int): Number of residues per SA fragment (4 for M32K25).
+            **kwargs: Extra options forwarded to window_mi_to_residue_mi, e.g.
+                      mask_overlapping_windows, coverage_normalize, overlap_mask_distance.
+
+        Returns:
+            MIBlock object holding the residue-level MI matrix of shape (N_res, N_res).
+        """
+
+        mi_res = window_mi_to_residue_mi(self.mi_matrix, window_len=fragment_size, **kwargs)
+        return MIBlock(mi_res)
 
 
     def remove_adjacent_mi(self, wide):

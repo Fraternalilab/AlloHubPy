@@ -346,7 +346,6 @@ def plot_SA_graph(graph, start_nodes, end_nodes, action="save", minmax=[], name=
             edge_thickness = [2.5] * len(edge_thickness)  # Assign a default value if all weights are equal
     
     # Graph layout
-    print(min_w, max_w)
     pos = nx.spring_layout(graph)
     
     plt.figure(dpi=1000)

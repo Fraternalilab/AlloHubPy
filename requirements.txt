@@ -12,3 +12,4 @@ fair-esm
 cffi
 mini3di
 tqdm
+scikit-learn

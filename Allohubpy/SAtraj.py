@@ -104,7 +104,8 @@ class SAtraj:
             disable_tqdm (bool): whether to show progress bar or not.
 
         Returns:
-            numpy array with the mutual information for each fragment shape (fragment, fragment)
+            list of MIBlock objects, one per block, each holding a mutual information
+            matrix of shape (fragment, fragment).
         """
         
         print("ENCODING TRAJECTORY")

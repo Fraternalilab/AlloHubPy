@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 import numpy as np
+
 
 def window_mi_to_residue_mi(
     mi_win: np.ndarray,
@@ -8,17 +11,27 @@ def window_mi_to_residue_mi(
     coverage_normalize: bool = True,
     eps: float = 1e-12,
 ) -> np.ndarray:
-
     """
     Project an MI matrix between overlapping windows (fragments) to a residue-residue MI matrix.
 
     Assumptions:
-        - Windows are consecutive and overlapping by 3 residues (stride 1).
+        - Windows are consecutive and overlapping by (window_len - 1) residues (stride 1).
         - Window i covers residues [i, i+1, ..., i+window_len-1].
         - mi_win is (M x M) where M = N_res - window_len + 1.
 
+    Args:
+        mi_win (np.ndarray): Square (M x M) MI matrix in SA fragment/window space.
+        window_len (int): Number of residues per SA fragment (4 for the M32K25 alphabet).
+        mask_overlapping_windows (bool): Zero out MI between windows that share residues
+                                         to remove trivial sequence-overlap signal.
+        overlap_mask_distance (int or None): Windows with |i - j| <= this value are masked.
+                                             Defaults to window_len - 1 (3 for 4-mers).
+        coverage_normalize (bool): Normalize for the fact that terminal residues appear in
+                                   fewer windows than central ones.
+        eps (float): Small constant to avoid division by zero during normalization.
+
     Returns:
-    mi_res: (N_res x N_res) residue-level MI matrix.
+        mi_res (np.ndarray): (N_res x N_res) residue-level MI matrix.
     """
 
     mi_win = np.asarray(mi_win, dtype=float)
@@ -97,4 +110,3 @@ if __name__ == "__main__":
     print("mi_win shape:", mi_win.shape)
     print("mi_res shape:", mi_res.shape)  # (M+3, M+3)
     print("top residues:", np.argsort(score)[::-1][:5])
-

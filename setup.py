@@ -1,34 +1,23 @@
 from setuptools import setup, Extension
-from setuptools import setup, find_packages
 from Cython.Build import cythonize
-import numpy as np 
-import os
+import numpy as np
+
+# Package metadata lives in pyproject.toml. This file only carries the build
+# logic that PEP 621 metadata cannot express: the Cython extension and the
+# cffi extension modules.
 
 # Define the Cython extension module
 extensions = [
     Extension(
         name="Allohubpy.Allohubpy_cython",       # Module name
-        sources=["Allohubpy/Allohubpy_cython.pyx"],  
-        include_dirs=[np.get_include()],    
+        sources=["Allohubpy/Allohubpy_cython.pyx"],
+        include_dirs=[np.get_include()],
         language="c"
     )
 ]
 
-# Setup function
 setup(
-    name="Allohubpy",
-    version="1.0",    
-    author="Oriol",
-    author_email="o.carmona@ucl.ac.uk",
-    python_requires=">=3.8",
-    cffi_modules=["Allohubpy/src/kabsch_extension_build.py:ffibuilder","Allohubpy/src/encodeframe_extension_build.py:ffibuilder"],
-    description="Allostery signal detection analysis using a information theory framework.",
-    packages=find_packages(),
+    cffi_modules=["Allohubpy/src/kabsch_extension_build.py:ffibuilder",
+                  "Allohubpy/src/encodeframe_extension_build.py:ffibuilder"],
     ext_modules=cythonize(extensions, language_level=3),
-    setup_requires=['Cython'],
-    install_requires=["numpy", "cython", "pandas", "seaborn", "matplotlib", "scipy", "statsmodels", "networkx", "mdtraj", "fair-esm", "torch", "cffi", "mini3di"],           # Other dependencies
-    zip_safe=False,
-    long_description=open("README.md").read(),
-    long_description_content_type="text/markdown",
-    url="https://github.com/Fraternalilab/AlloHubPy"
 )
