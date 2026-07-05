@@ -48,7 +48,7 @@ class MIBlock:
             except:
                 raise TypeError("Both operands can't be added together")
 
-        return MIBlock(new_matrix, self.length)
+        return MIBlock(new_matrix)
     
 
     def __mul__(self, other):
@@ -70,7 +70,7 @@ class MIBlock:
             new_matrix = self.mi_matrix * other
         except:
             raise TypeError("Both operands can't be multiplied together")
-        return MIBlock(new_matrix, self.length)
+        return MIBlock(new_matrix)
 
 
     def __truediv__(self, other):
@@ -92,7 +92,7 @@ class MIBlock:
             new_matrix = self.mi_matrix / other
         except:
             raise TypeError("Both operands can't be divided together")
-        return MIBlock(new_matrix, self.length)
+        return MIBlock(new_matrix)
 
 
     def get_mi_matrix(self):
