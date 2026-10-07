@@ -176,7 +176,136 @@ class Overlap:
             return 1 - np.sqrt(overlap)
         else:
             return 1.0
-        
+
+    # ------------------------ subspace CONTAINMENT (asymmetric) -----------------
+    # The covariance overlap (eigen_overlap) is symmetric and eigenvalue-weighted:
+    # it conflates "are the directions aligned" with "is the amount of sampling the same",
+    # so if B samples A's modes plus more, the overlap drops even though A is fully inside B.
+    # Containment projects A's dominant MI-eigenmodes onto B's subspace and measures
+    # the captured variance:
+    #   C(A->B) = sum_i lambda_i^A * ||P_B a_i||^2 / sum_i lambda_i^A ,  in [0,1]
+    # C(A->B) = 1 iff A's top-k modes lie in B's top-m subspace (regardless of B's
+    # extra sampling). It is asymmetric: C(A->B) != C(B->A).
+    # Ported from AlloDynGen (allodyn/eval_overlap.py).
+
+    @staticmethod
+    def consensus_block(mi_blocks):
+        """
+        Consensus MIBlock: mean MI matrix over blocks, with its eigensystem computed.
+
+        Args:
+            mi_blocks (list of MIBlock): MI blocks to average (e.g. one trajectory or one condition).
+
+        Returns:
+            MIBlock of the averaged MI matrix.
+        """
+        from Allohubpy.MIblock import MIBlock
+        mean_mi = np.mean([b.get_mi_matrix() for b in mi_blocks], axis=0)
+        mi_block = MIBlock(mean_mi)
+        mi_block.compute_eigensystem()
+        return mi_block
+
+    @staticmethod
+    def _top_modes(mi_obj, n):
+        """
+        Top-n eigenvectors (columns) and eigenvalues (clipped >= 0), by descending eigenvalue.
+        The MI matrix is symmetric but not positive semi-definite, so negatives are dropped.
+        """
+        idx = mi_obj.eigenvalues_map[:n]
+        vecs = np.asarray(mi_obj.eigenvectors)[:, idx]
+        lam = np.clip(np.asarray(mi_obj.eigenvalues)[:n], 0.0, None)
+        return vecs, lam
+
+    @staticmethod
+    def containment(mi_obj1, mi_obj2, k=3, m=10):
+        """
+        Asymmetric subspace containment C(1->2): the eigenvalue-weighted fraction of
+        the top-k eigenmodes of mi_obj1 that lies inside the top-m eigenvector subspace of mi_obj2.
+
+        Args:
+            mi_obj1 (MIBlock): ensemble A whose modes are tested (eigensystem computed).
+            mi_obj2 (MIBlock): ensemble B providing the containing subspace (eigensystem computed).
+            k (int): number of top modes of A to test.
+            m (int): size of B's subspace allowed to contain them.
+
+        Returns:
+            (C_weighted, RMSIP): weighted containment in [0,1] and the root mean square inner product.
+        """
+        vecs1, lam1 = Overlap._top_modes(mi_obj1, k)
+        vecs2, _ = Overlap._top_modes(mi_obj2, m)
+        # captured fraction per mode of A
+        frac = ((vecs1.T @ vecs2) ** 2).sum(1)
+        if lam1.sum() > 0:
+            c_weighted = float((lam1 * frac).sum() / lam1.sum())
+        else:
+            c_weighted = float(frac.mean())
+        return c_weighted, float(np.sqrt(frac.mean()))
+
+    @staticmethod
+    def modes_to_capture(mi_obj1, mi_obj2, k=3, thresh=0.9):
+        """
+        Smallest number of mi_obj2 modes needed to contain 'thresh' of the top-k variance of mi_obj1.
+
+        Returns:
+            int, or None if the threshold is never reached with all modes.
+        """
+        vecs1, lam1 = Overlap._top_modes(mi_obj1, k)
+        vecs2_all = np.asarray(mi_obj2.eigenvectors)[:, mi_obj2.eigenvalues_map]
+        cum = np.cumsum((vecs1.T @ vecs2_all) ** 2, axis=1)            # (k, N)
+        cw_of_m = (lam1[:, None] * cum).sum(0) / (lam1.sum() + 1e-12)  # (N,)
+        hit = np.where(cw_of_m >= thresh)[0]
+        return int(hit[0] + 1) if hit.size else None
+
+    def compute_containment(self, k=3, m=10, traj_mapping=None):
+        """
+        Computes the asymmetric containment between the consensus (block-averaged) MI matrices
+        of all trajectories and, if a mapping is given, of all conditions.
+
+        Args:
+            k (int): number of top modes of the contained ensemble A.
+            m (int): subspace size of the containing ensemble B.
+            traj_mapping (list of ints or None): condition of each trajectory, e.g. [0,0,0,1,1,1].
+
+        Returns:
+            dict with
+              "trajectories": matrix C[i][j] = C(traj i -> traj j),
+              "conditions": matrix C[a][b] = C(cond a -> cond b) (only with traj_mapping),
+              "modes90_conditions": matrix of B-modes needed to hold 90% of A's top-k variance
+                                    (only with traj_mapping; NaN if never reached).
+        """
+        cons_traj = [self.consensus_block(tr) for tr in self.traj_list]
+        n = len(cons_traj)
+        c_traj = np.zeros(shape=(n, n))
+        for i in range(n):
+            for j in range(n):
+                c_traj[i][j], _ = self.containment(cons_traj[i], cons_traj[j], k, m)
+        results = {"trajectories": np.round(c_traj, 4)}
+
+        if traj_mapping is not None:
+            groups = sorted(set(traj_mapping))
+            cons_cond = []
+            for g in groups:
+                pooled = []
+                for i, tr in enumerate(self.traj_list):
+                    if traj_mapping[i] == g:
+                        pooled += tr
+                cons_cond.append(self.consensus_block(pooled))
+            c_cond = np.zeros(shape=(len(groups), len(groups)))
+            modes90 = np.full(shape=(len(groups), len(groups)), fill_value=np.nan)
+            for a in range(len(groups)):
+                for b in range(len(groups)):
+                    c_cond[a][b], _ = self.containment(cons_cond[a], cons_cond[b], k, m)
+                    n90 = self.modes_to_capture(cons_cond[a], cons_cond[b], k)
+                    if n90 is not None:
+                        modes90[a][b] = n90
+                    if a != b:
+                        print("CONTAINMENT C(%s->%s) (k=%d, m=%d): %.4f   [modes for 90%%: %s]"
+                              % (groups[a], groups[b], k, m, c_cond[a][b], n90))
+            results["conditions"] = np.round(c_cond, 4)
+            results["modes90_conditions"] = modes90
+
+        return results
+
 #    def separate_groups(self, traj_mapping, splitting):
 #        # split them by groups
 #        mapping_dict = {}
