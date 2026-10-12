@@ -29,7 +29,10 @@ def calculate_transition_probabilities(np.ndarray[np.int32_t, ndim=2] matrix, in
     
     return transition_probabilities
 
-def calculate_mutual_information(np.ndarray[int, ndim=2] matrix, int num_states):
+def calculate_mutual_information(np.ndarray[int, ndim=2] matrix, int num_states, double zero_entropy_mi=1.0):
+    # zero_entropy_mi: MI assigned to a pair whose joint entropy is zero (both fragments in a
+    #   single state throughout the block). 1.0 is the original convention; 0.0 treats such
+    #   pairs as uncoupled, since no covariation can be observed.
     cdef int n_rows = matrix.shape[0]
     cdef int n_cols = matrix.shape[1]
     cdef int col_a, col_b, i, x, y
@@ -91,7 +94,7 @@ def calculate_mutual_information(np.ndarray[int, ndim=2] matrix, int num_states)
             if entropy > 0:
                 mi_co = (mi - f_error)/entropy
             else:
-                mi_co = 1.0
+                mi_co = zero_entropy_mi
 
             # Store mutual information value in the matrix (symmetrically)
             mi_matrix[col_a, col_b] = mi_co

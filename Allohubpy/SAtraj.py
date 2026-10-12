@@ -95,13 +95,16 @@ class SAtraj:
         self._read_sa(sa_file, randomize)
 
     
-    def compute_mis(self, max_workers=None, disable_tqdm=False):
+    def compute_mis(self, max_workers=None, disable_tqdm=False, zero_entropy_mi=1.0):
         """
         Encodes all the blocks and creates MI objects
 
         Args:
             max_workers (int or None): Maximum number of workers to use for multiprocessing. None eqauls all possible.
             disable_tqdm (bool): whether to show progress bar or not.
+            zero_entropy_mi (float): MI assigned to fragment pairs with zero joint entropy in a block
+                (both fragments frozen in one state). 1.0 is the original convention; 0.0 treats
+                frozen pairs as uncoupled.
 
         Returns:
             list of MIBlock objects, one per block, each holding a mutual information
@@ -123,7 +126,9 @@ class SAtraj:
 
         with ProcessPoolExecutor(max_workers=max_workers) as executor:
             # Submit all tasks to the executor and keep track of the futures
-            futures = {executor.submit(calculate_mutual_information, self.int_traj[idx * self.b_size : (idx+1) * self.b_size,], len(self.alphabet)): 
+            # the zero-entropy option is passed only when set, so builds of the extension without it still work
+            extra_args = () if zero_entropy_mi == 1.0 else (zero_entropy_mi,)
+            futures = {executor.submit(calculate_mutual_information, self.int_traj[idx * self.b_size : (idx+1) * self.b_size,], len(self.alphabet), *extra_args):
                        idx for idx in range(rango)}
             
             # Collect results as they complete

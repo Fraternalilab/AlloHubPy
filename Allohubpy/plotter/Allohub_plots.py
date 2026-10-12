@@ -316,6 +316,59 @@ def plot_updownregulation(updown_regulation_df, fold_threshold, pvalue_threshold
     plt.close()
 
 
+def plot_delta_mi_volcano(significance_df, component, dmi_threshold, pvalue_threshold, ylim=10,
+                          labels=("Gain in B", "Loss in B"), pvalue_prefix="AdjP_", action="save", name="delta_mi_volcano.png"):
+    """
+    Plots the volcano plot of one part of the MI change (total, interaction or population).
+
+    Args:
+        significance_df (pandas DataFrame): output of MI_decomposition.delta_mi_significance.
+        component (str): 'dMI', 'int' or 'pop'.
+        dmi_threshold (float): minimum absolute MI change to consider the signal as relevant.
+        pvalue_threshold (float): maximum adjusted p-value to consider the change as significant.
+        ylim (float): highest value for the y axis (-log10 adjusted p-value); smaller p-values are drawn at ylim.
+        labels (tuple of str): legend labels of the positive and negative significant changes (B - A).
+        pvalue_prefix (str): column prefix of the adjusted p-values: 'AdjP_' (block bootstrap,
+            MI_decomposition.delta_mi_significance) or 'AdjPjk_' (replica jackknife, delta_mi_jackknife).
+        action (str): What to do with the plot, 'save' for saving it, 'show' for displaying it.
+        name (str): name to use to save the plot, including format.
+    """
+
+    df = significance_df
+    value = df["dMI"] if component == "dMI" else df[f"dMI_{component}"]
+    log_p = -np.log10(np.clip(df[f"{pvalue_prefix}{component}"], 10.0 ** -ylim, 1.0))
+    significant = df[f"{pvalue_prefix}{component}"] < pvalue_threshold
+    gain = significant & (value > dmi_threshold)
+    loss = significant & (value < -dmi_threshold)
+    rest = ~(gain | loss)
+
+    plt.figure(figsize=(10, 6))
+    plt.scatter(value[rest], log_p[rest], color='grey', label='Not significant', s=10)
+    plt.scatter(value[gain], log_p[gain], color='red', label=labels[0], s=20)
+    plt.scatter(value[loss], log_p[loss], color='blue', label=labels[1], s=20)
+    for x in (-dmi_threshold, dmi_threshold):
+        plt.axvline(x, color='black', linestyle=':', linewidth=0.8)
+    plt.axhline(-np.log10(pvalue_threshold), color='black', linestyle=':', linewidth=0.8)
+
+    titles = {"dMI": "total MI change", "int": "interaction part", "pop": "population part"}
+    xlabels = {"dMI": "MI change", "int": "Interaction part of the MI change", "pop": "Population part of the MI change"}
+    plt.xlabel(f'{xlabels.get(component, component)}, B - A')
+    plt.ylabel('-Log10 Adjusted P-value')
+    plt.ylim(0, ylim * 1.02)
+    plt.title(f'Volcano Plot: {titles.get(component, component)}')
+    plt.legend()
+    plt.grid(True)
+
+    # Display or save the plot
+    if action == "save":
+        plt.savefig(name)
+    else:
+        plt.show()
+
+    # clean up
+    plt.close()
+
+
 def plot_SA_graph(graph, start_nodes, end_nodes, action="save", minmax=[], name="SA_graph.png"):
     """
     Plots the fragment graph with colored nodes, red for ending nodes, blue for start nodes, green the rest. 
