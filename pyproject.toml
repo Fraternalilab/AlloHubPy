@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools", "cython", "cffi", "numpy"]
+requires = ["setuptools>=77.0.0", "cython", "cffi", "numpy"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -18,7 +18,8 @@ maintainers = [
 ]
 description = "Package to analyze allosteric signal from MD simulation using Information Theory"
 readme = "README.md"
-license = {file = "LICENSE"}
+license = "GPL-3.0-only"
+license-files = ["LICENSE"]
 classifiers = [
   "Development Status :: 4 - Beta",
   "Programming Language :: Python"
