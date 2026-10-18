@@ -104,27 +104,9 @@ class Encoder3DI(AbsEncoder):
             encoded string (str)
         """
 
-        # Add Nans to the atoms without CB
-        c_beta_fixed = []
-        residue_idx = 0 # keep track of the shifted residues
-
-        # iterate over residues present in the sequence
-        for residue in frame_dict["residues"]:
-            # For non special residues just add the xyz of the CB
-            if residue not in ["GLY", "PRO"]:
-                c_beta_fixed.append(frame_dict["CB"][residue_idx])
-                residue_idx += 1 # update counter
-
-            # For special residues add nans for the xyz coordinates
-            else:
-                c_beta_fixed.append(np.array([np.nan, np.nan, np.nan]))
-
-        # Convert to numpy
-        c_beta_fixed = np.array(c_beta_fixed)
-
         # load data into mini3di encoder
         states = self.encoder.encode_atoms(ca=frame_dict["CA"],
-                                           cb=c_beta_fixed,
+                                           cb=frame_dict["CB"], # NaN for residues without CB (GLY)
                                            n=frame_dict["N"],
                                            c=frame_dict["C"])
         
@@ -281,9 +263,21 @@ class TrajLoader:
 
         self.topology = md.load(self.topology_file)
 
-        for group in self.to_extract:
-            indexes = self.topology.topology.select(f"name {group} and protein")
-            self.to_keep_dict.setdefault(group, indexes)
+        # Select protein residues by their backbone atoms rather than by residue name,
+        # so that force-field specific names (e.g. Amber termini NGLY, CCYS) are kept.
+        # Residues lacking an atom (e.g. CB in GLY) get index -1 and NaN coordinates.
+        backbone = {"N", "CA", "C"}
+        self.residues = []
+        for residue in self.topology.topology.residues:
+            atom_names = {atom.name: atom.index for atom in residue.atoms}
+            if not backbone.issubset(atom_names):
+                continue
+            self.residues.append(residue.name)
+            for group in self.to_extract:
+                self.to_keep_dict.setdefault(group, []).append(atom_names.get(group, -1))
+
+        for group in self.to_keep_dict:
+            self.to_keep_dict[group] = np.array(self.to_keep_dict[group], dtype=int)
 
 
     def load_traj(self):
@@ -319,10 +313,11 @@ class TrajLoader:
         results = {}
 
         if self.index < len(self.md_traj):
-            results["residues"] = [res.name for res in self.md_traj.topology.residues]
+            results["residues"] = self.residues
             for group in self.to_keep_dict:
                 indexes = self.to_keep_dict[group]
                 current_frame = self.md_traj.xyz[self.index, indexes, :]
+                current_frame[indexes < 0] = np.nan
                 results.setdefault(group, current_frame)
 
             self.index += 1  # Move to the next index
