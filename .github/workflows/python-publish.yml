@@ -82,7 +82,9 @@ jobs:
     - name: Create GitHub Release
       env:
         GITHUB_TOKEN: ${{ github.token }}
+      # Skip creation if the release was already made by hand.
       run: >-
+        gh release view '${{ github.ref_name }}' --repo '${{ github.repository }}' >/dev/null 2>&1 ||
         gh release create
         '${{ github.ref_name }}'
         --repo '${{ github.repository }}'
@@ -95,6 +97,6 @@ jobs:
       # sigstore-produced signatures and certificates.
       run: >-
         gh release upload
-        '${{ github.ref_name }}' dist/**
+        '${{ github.ref_name }}' dist/** --clobber
         --repo '${{ github.repository }}'
 
