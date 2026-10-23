@@ -88,6 +88,20 @@ enc_mk.load_trajectory(topology="topo.pdb", mdtraj="mdtraj.xtc", skip=100, strid
 enc_mk.encode()
 ```
 
+Optionally, the M32K25 encoder also writes the Kabsch fit RMSD (in Å) of the
+best fitting fragment, i.e. the fragment assigned as letter, at each position.
+Each line of the RMSD file holds the values for the corresponding line (frame)
+of the SA string file.
+
+```python
+enc_mk = TrajProcessor.SAEncoder("outputname_mk.sa", rmsd_file_name="outputname_mk.rmsd")
+enc_mk.load_trajectory(topology="topo.pdb", mdtraj="mdtraj.xtc", skip=100, stride=10)
+enc_mk.encode()
+
+# array of shape (number of frames, number of fragments)
+rmsd = np.loadtxt("outputname_mk.rmsd")
+```
+
 
 ### SA handler
 

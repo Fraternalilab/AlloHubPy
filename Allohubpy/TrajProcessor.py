@@ -119,8 +119,18 @@ class Encoder3DI(AbsEncoder):
 
 class SAEncoder(AbsEncoder):
 
-    def __init__(self, output_file_name):
+    def __init__(self, output_file_name, rmsd_file_name=None):
+        """
+        Initializes the M32K25 structural alphabet encoder.
+
+        Args:
+            output_file_name (str): Name of the output file for the SA strings.
+            rmsd_file_name (str or None): Optional name of the output file for the Kabsch fit RMSD (in Angstrom)
+                                          of the best fitting fragment at each position. Each line holds the
+                                          RMSD values of the corresponding line (frame) in the SA string file.
+        """
         super().__init__(atoms_to_keep=["CA"], output_file_name=output_file_name)
+        self.rmsd_output = rmsd_file_name
 
         self.sadict = {"A": [ 2.630,  11.087,-12.054,  2.357,  13.026,-15.290,   1.365,  16.691,-15.389,   0.262,  18.241,-18.694],
                        "B": [ 9.284,  15.264, 44.980, 12.933,  14.193, 44.880,  14.898,  12.077, 47.307,  18.502,  10.955, 47.619],
@@ -162,6 +172,39 @@ class SAEncoder(AbsEncoder):
         self.ffi = FFI()
 
 
+    def set_rmsd_file(self, rmsd_file):
+        """
+        Sets the output file to save the Kabsch fit RMSD of the assigned fragments.
+
+        Args:
+            rmsd_file (str or None): file to save the RMSD values to, None to disable.
+        """
+
+        self.rmsd_output = rmsd_file
+
+
+    def encode(self):
+        """
+        Encodes the whole trajectory and saves it to a file.
+        If an RMSD file is set, the fit RMSD of the assigned fragments is saved alongside.
+        """
+
+        if self.rmsd_output is None:
+            return super().encode()
+
+        if not isinstance(self.traj, TrajLoader):
+            raise AttributeError("Encoder has no trajectory loaded use .load_trajectory first")
+
+        with open(self.output, "w") as out, open(self.rmsd_output, "w") as rmsd_out:
+
+            for results_dict in self.traj:
+                encoded_string, rmsd = self._c_encode(results_dict["CA"])
+                out.write(encoded_string)
+                out.write("\n")
+                rmsd_out.write(" ".join(f"{value:.3f}" for value in rmsd))
+                rmsd_out.write("\n")
+
+
     def _generate_samap(self):
         """
         Generates a map of SA fragment names to their respective indexes
@@ -185,6 +228,7 @@ class SAEncoder(AbsEncoder):
         
         Returns:
             string of the encoded frame
+            np.ndarray (n_windows,) of the fit RMSD (Angstrom) of the assigned fragments
         """
 
         # Variables needed for the C function
@@ -192,14 +236,17 @@ class SAEncoder(AbsEncoder):
         n_windows = protein_length - self.fragment_size + 1
         n_fragments = int(len(self.sadict))
         encoding = np.zeros(n_windows, dtype=np.int32)
+        rmsd = np.zeros(n_windows, dtype=np.float32)
         mdframe = self.ffi.cast("float(*)[3]", frame.ctypes.data)
         fragments = self.ffi.cast("float(*)[3]", self.sa_library.ctypes.data)
         c_encoding = self.ffi.cast("int *", self.ffi.from_buffer(encoding, require_writable=True))
+        c_rmsd = self.ffi.cast("float *", self.ffi.from_buffer(rmsd, require_writable=True))
         # Call to the C function that does the encoding
-        encode_frame(n_windows, n_fragments, self.fragment_size, mdframe, fragments, c_encoding)
+        encode_frame(n_windows, n_fragments, self.fragment_size, mdframe, fragments, c_encoding, c_rmsd)
         # Convert the list of indexes to SA fragment names
         econded_string = self._map_encoding(c_encoding, n_windows)
-        return econded_string
+        # Coordinates are in nm, report the RMSD in Angstrom
+        return econded_string, rmsd * 10
 
 
     def _map_encoding(self, encoded_prot, n_windows):
@@ -223,7 +270,7 @@ class SAEncoder(AbsEncoder):
 
         # Encode the protein frame
         frame = frame_dict["CA"] # M32k25 only uses C alphas
-        encoded_string = self._c_encode(frame)
+        encoded_string, _ = self._c_encode(frame)
         return encoded_string
 
 

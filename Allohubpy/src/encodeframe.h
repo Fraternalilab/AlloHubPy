@@ -1,7 +1,8 @@
 /*
 * Encodes a matrix of atoms into SA fragments using the kabsch algorithm.
 * The protein is encoded using an sliding window against a library of fragments.
-* The algorithm returns an index of the fragment that best fits each window.
+* The algorithm returns an index of the fragment that best fits each window
+* and, if Rmsd is not NULL, the RMSD of that best fit.
 */
 
 #ifndef ENCODEFRAME_H
@@ -13,7 +14,7 @@ extern "C" {
 #endif
 
 void encode_frame(unsigned int n_windows, unsigned int n_fragments, unsigned int f_size, float (*MDframe)[3],
- float (*Fragments)[3], int *Encoding);
+ float (*Fragments)[3], int *Encoding, float *Rmsd);
 
 
  #if defined(__cplusplus)

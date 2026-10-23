@@ -3,7 +3,7 @@ import os
 
 ffibuilder = FFI()
 
-ffibuilder.cdef("void encode_frame(unsigned int n_windows, unsigned int n_fragments, unsigned int f_size, float (*MDframe)[3], float (*Fragments)[3], int *Encoding);")
+ffibuilder.cdef("void encode_frame(unsigned int n_windows, unsigned int n_fragments, unsigned int f_size, float (*MDframe)[3], float (*Fragments)[3], int *Encoding, float *Rmsd);")
 
 #src_dir = os.path.abspath("Allohubpy/src")
 src_dir = os.path.join("Allohubpy", "src")
