@@ -49,7 +49,20 @@ pip install
 ## Examples
 
 Examples on how to run the code can be found in the *notebooks* folder.
-All necessary data are provided in the respctive data folders under *notebook*.
+All necessary data are provided in the respective data folders under *notebooks*.
+
+The notebooks come in two versions:
+
+- *NtrC_analysis* and *PKM2_analysis* (.ipynb and .html) are the versions
+  referenced in the paper (Gracia Carmona et al., J. Mol. Biol. 2025,
+  https://doi.org/10.1016/j.jmb.2025.168969), as released in v1.0. They are kept unchanged.
+- *NtrC_analysis_v1.1* and *PKM2_analysis_v1.1* are updated for v1.1:
+  they run with the current package, include proofread text, and the NtrC
+  notebook adds the fragment fit RMSD output. The NtrC results were recomputed
+  after two bug fixes: the 3DI encoder now uses the real CB of proline
+  residues, and the coordinates of M32K25 prototype fragment D were corrected.
+  As a result, the 3DI results differ substantially, and the M32K25 results
+  slightly, from those in the paper.
 
 
 ## Usage
