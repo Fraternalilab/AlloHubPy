@@ -64,6 +64,11 @@ The notebooks come in two versions:
   As a result, the 3DI results differ substantially, and the M32K25 results
   slightly, from those in the paper.
 
+The encoded NtrC trajectories in *notebooks/data_NtrC* follow the same scheme:
+*encoded_NtrC_\*.sa* are the published v1.0 encodings, and
+*encoded_NtrC_\*_v1.1.sa* (with the M32K25 fit RMSD in *\*_mk_v1.1.rmsd*)
+are the encodings used by *NtrC_analysis_v1.1*.
+
 
 ## Usage
 

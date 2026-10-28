@@ -7559,12 +7559,12 @@ The argument stride=10 extracts every 10th frame, producing a spacing of 1 ns be
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Other alphabets can be easily added to the analysis using the AbsEncoder class. </span>
 
 <span class="c1"># Encoder for 3DI</span>
-<span class="n">enc_3di</span> <span class="o">=</span> <span class="n">TrajProcessor</span><span class="o">.</span><span class="n">Encoder3DI</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl1_3di.sa"</span><span class="p">)</span>
+<span class="n">enc_3di</span> <span class="o">=</span> <span class="n">TrajProcessor</span><span class="o">.</span><span class="n">Encoder3DI</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl1_3di_v1.1.sa"</span><span class="p">)</span>
 
 <span class="c1"># Encoder for M32K25</span>
 <span class="c1"># Optionally, the Kabsch fit RMSD (in Angstrom) of the assigned fragments is written to a second file</span>
-<span class="n">enc_mk</span> <span class="o">=</span> <span class="n">TrajProcessor</span><span class="o">.</span><span class="n">SAEncoder</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl1_mk.sa"</span><span class="p">,</span>
-                                 <span class="n">rmsd_file_name</span><span class="o">=</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl1_mk.rmsd"</span><span class="p">)</span>
+<span class="n">enc_mk</span> <span class="o">=</span> <span class="n">TrajProcessor</span><span class="o">.</span><span class="n">SAEncoder</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl1_mk_v1.1.sa"</span><span class="p">,</span>
+                                 <span class="n">rmsd_file_name</span><span class="o">=</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl1_mk_v1.1.rmsd"</span><span class="p">)</span>
 
 <span class="c1"># Trajectory frames are saved every 100 ps. With stride = 10 only every 10th frame is processed, producing a spacing of 1 ns between frames</span>
 <span class="c1"># We skip 100 frames -&gt; 10 ns as extra equilibration</span>
@@ -7579,9 +7579,9 @@ The argument stride=10 extracts every 10th frame, producing a spacing of 1 ns be
 <span class="nb">print</span><span class="p">(</span><span class="s2">"Encoded NtrC inactive repl1"</span><span class="p">)</span>
 
 <span class="c1">## Load repl2 of condition 1</span>
-<span class="n">enc_3di</span><span class="o">.</span><span class="n">set_output_file</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl2_3di.sa"</span><span class="p">)</span>
-<span class="n">enc_mk</span><span class="o">.</span><span class="n">set_output_file</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl2_mk.sa"</span><span class="p">)</span>
-<span class="n">enc_mk</span><span class="o">.</span><span class="n">set_rmsd_file</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl2_mk.rmsd"</span><span class="p">)</span>
+<span class="n">enc_3di</span><span class="o">.</span><span class="n">set_output_file</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl2_3di_v1.1.sa"</span><span class="p">)</span>
+<span class="n">enc_mk</span><span class="o">.</span><span class="n">set_output_file</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl2_mk_v1.1.sa"</span><span class="p">)</span>
+<span class="n">enc_mk</span><span class="o">.</span><span class="n">set_rmsd_file</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl2_mk_v1.1.rmsd"</span><span class="p">)</span>
 
 <span class="n">enc_3di</span><span class="o">.</span><span class="n">load_trajectory</span><span class="p">(</span><span class="n">topology</span><span class="o">=</span><span class="s2">"data_NtrC/NtrC_inactive_nowat.pdb"</span><span class="p">,</span> <span class="n">mdtraj</span><span class="o">=</span><span class="s2">"data_NtrC/NtrC_inactive_repl2.xtc"</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">enc_3di</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
@@ -7592,9 +7592,9 @@ The argument stride=10 extracts every 10th frame, producing a spacing of 1 ns be
 <span class="nb">print</span><span class="p">(</span><span class="s2">"Encoded NtrC inactive repl2"</span><span class="p">)</span>
 
 <span class="c1">## Load repl3 of condition 1</span>
-<span class="n">enc_3di</span><span class="o">.</span><span class="n">set_output_file</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl3_3di.sa"</span><span class="p">)</span>
-<span class="n">enc_mk</span><span class="o">.</span><span class="n">set_output_file</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl3_mk.sa"</span><span class="p">)</span>
-<span class="n">enc_mk</span><span class="o">.</span><span class="n">set_rmsd_file</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl3_mk.rmsd"</span><span class="p">)</span>
+<span class="n">enc_3di</span><span class="o">.</span><span class="n">set_output_file</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl3_3di_v1.1.sa"</span><span class="p">)</span>
+<span class="n">enc_mk</span><span class="o">.</span><span class="n">set_output_file</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl3_mk_v1.1.sa"</span><span class="p">)</span>
+<span class="n">enc_mk</span><span class="o">.</span><span class="n">set_rmsd_file</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl3_mk_v1.1.rmsd"</span><span class="p">)</span>
 
 <span class="n">enc_3di</span><span class="o">.</span><span class="n">load_trajectory</span><span class="p">(</span><span class="n">topology</span><span class="o">=</span><span class="s2">"data_NtrC/NtrC_inactive_nowat.pdb"</span><span class="p">,</span> <span class="n">mdtraj</span><span class="o">=</span><span class="s2">"data_NtrC/NtrC_inactive_repl3.xtc"</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">enc_3di</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
@@ -7605,9 +7605,9 @@ The argument stride=10 extracts every 10th frame, producing a spacing of 1 ns be
 <span class="nb">print</span><span class="p">(</span><span class="s2">"Encoded NtrC inactive repl3"</span><span class="p">)</span>
 
 <span class="c1">## Load repl1 of condition 2</span>
-<span class="n">enc_3di</span><span class="o">.</span><span class="n">set_output_file</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl1_3di.sa"</span><span class="p">)</span>
-<span class="n">enc_mk</span><span class="o">.</span><span class="n">set_output_file</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl1_mk.sa"</span><span class="p">)</span>
-<span class="n">enc_mk</span><span class="o">.</span><span class="n">set_rmsd_file</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl1_mk.rmsd"</span><span class="p">)</span>
+<span class="n">enc_3di</span><span class="o">.</span><span class="n">set_output_file</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl1_3di_v1.1.sa"</span><span class="p">)</span>
+<span class="n">enc_mk</span><span class="o">.</span><span class="n">set_output_file</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl1_mk_v1.1.sa"</span><span class="p">)</span>
+<span class="n">enc_mk</span><span class="o">.</span><span class="n">set_rmsd_file</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl1_mk_v1.1.rmsd"</span><span class="p">)</span>
 
 <span class="n">enc_3di</span><span class="o">.</span><span class="n">load_trajectory</span><span class="p">(</span><span class="n">topology</span><span class="o">=</span><span class="s2">"data_NtrC/NtrC_active_nowat.pdb"</span><span class="p">,</span> <span class="n">mdtraj</span><span class="o">=</span><span class="s2">"data_NtrC/NtrC_active_repl1.xtc"</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">enc_3di</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
@@ -7618,9 +7618,9 @@ The argument stride=10 extracts every 10th frame, producing a spacing of 1 ns be
 <span class="nb">print</span><span class="p">(</span><span class="s2">"Encoded NtrC active repl1"</span><span class="p">)</span>
 
 <span class="c1">## Load repl2 of condition 2</span>
-<span class="n">enc_3di</span><span class="o">.</span><span class="n">set_output_file</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl2_3di.sa"</span><span class="p">)</span>
-<span class="n">enc_mk</span><span class="o">.</span><span class="n">set_output_file</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl2_mk.sa"</span><span class="p">)</span>
-<span class="n">enc_mk</span><span class="o">.</span><span class="n">set_rmsd_file</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl2_mk.rmsd"</span><span class="p">)</span>
+<span class="n">enc_3di</span><span class="o">.</span><span class="n">set_output_file</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl2_3di_v1.1.sa"</span><span class="p">)</span>
+<span class="n">enc_mk</span><span class="o">.</span><span class="n">set_output_file</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl2_mk_v1.1.sa"</span><span class="p">)</span>
+<span class="n">enc_mk</span><span class="o">.</span><span class="n">set_rmsd_file</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl2_mk_v1.1.rmsd"</span><span class="p">)</span>
 
 <span class="n">enc_3di</span><span class="o">.</span><span class="n">load_trajectory</span><span class="p">(</span><span class="n">topology</span><span class="o">=</span><span class="s2">"data_NtrC/NtrC_active_nowat.pdb"</span><span class="p">,</span> <span class="n">mdtraj</span><span class="o">=</span><span class="s2">"data_NtrC/NtrC_active_repl2.xtc"</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">enc_3di</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
@@ -7631,9 +7631,9 @@ The argument stride=10 extracts every 10th frame, producing a spacing of 1 ns be
 <span class="nb">print</span><span class="p">(</span><span class="s2">"Encoded NtrC active repl2"</span><span class="p">)</span>
 
 <span class="c1">## Load repl3 of condition 2</span>
-<span class="n">enc_3di</span><span class="o">.</span><span class="n">set_output_file</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl3_3di.sa"</span><span class="p">)</span>
-<span class="n">enc_mk</span><span class="o">.</span><span class="n">set_output_file</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl3_mk.sa"</span><span class="p">)</span>
-<span class="n">enc_mk</span><span class="o">.</span><span class="n">set_rmsd_file</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl3_mk.rmsd"</span><span class="p">)</span>
+<span class="n">enc_3di</span><span class="o">.</span><span class="n">set_output_file</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl3_3di_v1.1.sa"</span><span class="p">)</span>
+<span class="n">enc_mk</span><span class="o">.</span><span class="n">set_output_file</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl3_mk_v1.1.sa"</span><span class="p">)</span>
+<span class="n">enc_mk</span><span class="o">.</span><span class="n">set_rmsd_file</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl3_mk_v1.1.rmsd"</span><span class="p">)</span>
 
 <span class="n">enc_3di</span><span class="o">.</span><span class="n">load_trajectory</span><span class="p">(</span><span class="n">topology</span><span class="o">=</span><span class="s2">"data_NtrC/NtrC_active_nowat.pdb"</span><span class="p">,</span> <span class="n">mdtraj</span><span class="o">=</span><span class="s2">"data_NtrC/NtrC_active_repl3.xtc"</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">enc_3di</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
@@ -7746,53 +7746,53 @@ Encoded NtrC active repl3
 <span class="c1"># Load encoded data into the model</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"Load encoded data into the model"</span><span class="p">)</span>
 
-<span class="n">sa_ntrc_active_100_1</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl1_mk.sa"</span><span class="p">)</span>
-<span class="n">sa_ntrc_active_100_2</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl2_mk.sa"</span><span class="p">)</span>
-<span class="n">sa_ntrc_active_100_3</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl3_mk.sa"</span><span class="p">)</span>
+<span class="n">sa_ntrc_active_100_1</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl1_mk_v1.1.sa"</span><span class="p">)</span>
+<span class="n">sa_ntrc_active_100_2</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl2_mk_v1.1.sa"</span><span class="p">)</span>
+<span class="n">sa_ntrc_active_100_3</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl3_mk_v1.1.sa"</span><span class="p">)</span>
 
-<span class="n">sa_ntrc_inactive_100_1</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl1_mk.sa"</span><span class="p">)</span>
-<span class="n">sa_ntrc_inactive_100_2</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl2_mk.sa"</span><span class="p">)</span>
-<span class="n">sa_ntrc_inactive_100_3</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl3_mk.sa"</span><span class="p">)</span>
+<span class="n">sa_ntrc_inactive_100_1</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl1_mk_v1.1.sa"</span><span class="p">)</span>
+<span class="n">sa_ntrc_inactive_100_2</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl2_mk_v1.1.sa"</span><span class="p">)</span>
+<span class="n">sa_ntrc_inactive_100_3</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl3_mk_v1.1.sa"</span><span class="p">)</span>
 
-<span class="n">sa_ntrc_active_10_1</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl1_mk.sa"</span><span class="p">)</span>
-<span class="n">sa_ntrc_active_10_2</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl2_mk.sa"</span><span class="p">)</span>
-<span class="n">sa_ntrc_active_10_3</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl3_mk.sa"</span><span class="p">)</span>
+<span class="n">sa_ntrc_active_10_1</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl1_mk_v1.1.sa"</span><span class="p">)</span>
+<span class="n">sa_ntrc_active_10_2</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl2_mk_v1.1.sa"</span><span class="p">)</span>
+<span class="n">sa_ntrc_active_10_3</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl3_mk_v1.1.sa"</span><span class="p">)</span>
 
-<span class="n">sa_ntrc_inactive_10_1</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl1_mk.sa"</span><span class="p">)</span>
-<span class="n">sa_ntrc_inactive_10_2</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl2_mk.sa"</span><span class="p">)</span>
-<span class="n">sa_ntrc_inactive_10_3</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl3_mk.sa"</span><span class="p">)</span>
+<span class="n">sa_ntrc_inactive_10_1</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl1_mk_v1.1.sa"</span><span class="p">)</span>
+<span class="n">sa_ntrc_inactive_10_2</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl2_mk_v1.1.sa"</span><span class="p">)</span>
+<span class="n">sa_ntrc_inactive_10_3</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl3_mk_v1.1.sa"</span><span class="p">)</span>
 
-<span class="n">sa_ntrc_active_50_1</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl1_mk.sa"</span><span class="p">)</span>
-<span class="n">sa_ntrc_active_50_2</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl2_mk.sa"</span><span class="p">)</span>
-<span class="n">sa_ntrc_active_50_3</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl3_mk.sa"</span><span class="p">)</span>
+<span class="n">sa_ntrc_active_50_1</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl1_mk_v1.1.sa"</span><span class="p">)</span>
+<span class="n">sa_ntrc_active_50_2</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl2_mk_v1.1.sa"</span><span class="p">)</span>
+<span class="n">sa_ntrc_active_50_3</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl3_mk_v1.1.sa"</span><span class="p">)</span>
 
-<span class="n">sa_ntrc_inactive_50_1</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl1_mk.sa"</span><span class="p">)</span>
-<span class="n">sa_ntrc_inactive_50_2</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl2_mk.sa"</span><span class="p">)</span>
-<span class="n">sa_ntrc_inactive_50_3</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl3_mk.sa"</span><span class="p">)</span>
+<span class="n">sa_ntrc_inactive_50_1</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl1_mk_v1.1.sa"</span><span class="p">)</span>
+<span class="n">sa_ntrc_inactive_50_2</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl2_mk_v1.1.sa"</span><span class="p">)</span>
+<span class="n">sa_ntrc_inactive_50_3</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl3_mk_v1.1.sa"</span><span class="p">)</span>
 
-<span class="n">sa_ntrc_active_100_1_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl1_mk.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">sa_ntrc_active_100_2_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl2_mk.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">sa_ntrc_active_100_3_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl3_mk.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">sa_ntrc_active_100_1_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl1_mk_v1.1.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">sa_ntrc_active_100_2_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl2_mk_v1.1.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">sa_ntrc_active_100_3_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl3_mk_v1.1.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-<span class="n">sa_ntrc_inactive_100_1_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl1_mk.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">sa_ntrc_inactive_100_2_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl2_mk.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">sa_ntrc_inactive_100_3_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl3_mk.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">sa_ntrc_inactive_100_1_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl1_mk_v1.1.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">sa_ntrc_inactive_100_2_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl2_mk_v1.1.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">sa_ntrc_inactive_100_3_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl3_mk_v1.1.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-<span class="n">sa_ntrc_active_10_1_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl1_mk.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">sa_ntrc_active_10_2_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl2_mk.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">sa_ntrc_active_10_3_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl3_mk.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">sa_ntrc_active_10_1_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl1_mk_v1.1.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">sa_ntrc_active_10_2_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl2_mk_v1.1.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">sa_ntrc_active_10_3_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl3_mk_v1.1.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-<span class="n">sa_ntrc_inactive_10_1_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl1_mk.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">sa_ntrc_inactive_10_2_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl2_mk.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">sa_ntrc_inactive_10_3_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl3_mk.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">sa_ntrc_inactive_10_1_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl1_mk_v1.1.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">sa_ntrc_inactive_10_2_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl2_mk_v1.1.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">sa_ntrc_inactive_10_3_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl3_mk_v1.1.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-<span class="n">sa_ntrc_active_50_1_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl1_mk.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">sa_ntrc_active_50_2_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl2_mk.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">sa_ntrc_active_50_3_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl3_mk.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">sa_ntrc_active_50_1_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl1_mk_v1.1.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">sa_ntrc_active_50_2_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl2_mk_v1.1.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">sa_ntrc_active_50_3_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl3_mk_v1.1.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-<span class="n">sa_ntrc_inactive_50_1_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl1_mk.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">sa_ntrc_inactive_50_2_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl2_mk.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">sa_ntrc_inactive_50_3_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl3_mk.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">sa_ntrc_inactive_50_1_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl1_mk_v1.1.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">sa_ntrc_inactive_50_2_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl2_mk_v1.1.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">sa_ntrc_inactive_50_3_norand</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl3_mk_v1.1.sa"</span><span class="p">,</span> <span class="n">randomize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -7904,7 +7904,7 @@ Each line of the RMSD file holds the values of the corresponding frame in the SA
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Load the fit RMSD of the assigned M32K25 fragments, array shape (frames, fragments)</span>
-<span class="n">rmsd</span> <span class="o">=</span> <span class="p">{</span><span class="n">state</span><span class="p">:</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="sa">f</span><span class="s2">"data_NtrC/encoded_NtrC_</span><span class="si">{</span><span class="n">state</span><span class="si">}</span><span class="s2">_repl</span><span class="si">{</span><span class="n">r</span><span class="si">}</span><span class="s2">_mk.rmsd"</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)]</span>
+<span class="n">rmsd</span> <span class="o">=</span> <span class="p">{</span><span class="n">state</span><span class="p">:</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="sa">f</span><span class="s2">"data_NtrC/encoded_NtrC_</span><span class="si">{</span><span class="n">state</span><span class="si">}</span><span class="s2">_repl</span><span class="si">{</span><span class="n">r</span><span class="si">}</span><span class="s2">_mk_v1.1.rmsd"</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)]</span>
         <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"inactive"</span><span class="p">,</span> <span class="s2">"active"</span><span class="p">)}</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
@@ -10376,21 +10376,21 @@ If the previous section has already been run, the lines for already computed obj
 <span class="n">sa_ntrc_inactive_100_3_3di</span> <span class="o">=</span> <span class="n">SAtraj</span><span class="o">.</span><span class="n">SAtraj</span><span class="p">(</span><span class="n">block_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">alphabet</span><span class="o">=</span><span class="n">SAtraj</span><span class="o">.</span><span class="n">ALPHABETS</span><span class="p">[</span><span class="s2">"3DI"</span><span class="p">])</span>
 
 <span class="c1"># Load data</span>
-<span class="n">sa_ntrc_active_100_1</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl1_mk.sa"</span><span class="p">)</span>
-<span class="n">sa_ntrc_active_100_2</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl2_mk.sa"</span><span class="p">)</span>
-<span class="n">sa_ntrc_active_100_3</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl3_mk.sa"</span><span class="p">)</span>
+<span class="n">sa_ntrc_active_100_1</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl1_mk_v1.1.sa"</span><span class="p">)</span>
+<span class="n">sa_ntrc_active_100_2</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl2_mk_v1.1.sa"</span><span class="p">)</span>
+<span class="n">sa_ntrc_active_100_3</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl3_mk_v1.1.sa"</span><span class="p">)</span>
 
-<span class="n">sa_ntrc_inactive_100_1</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl1_mk.sa"</span><span class="p">)</span>
-<span class="n">sa_ntrc_inactive_100_2</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl2_mk.sa"</span><span class="p">)</span>
-<span class="n">sa_ntrc_inactive_100_3</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl3_mk.sa"</span><span class="p">)</span>
+<span class="n">sa_ntrc_inactive_100_1</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl1_mk_v1.1.sa"</span><span class="p">)</span>
+<span class="n">sa_ntrc_inactive_100_2</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl2_mk_v1.1.sa"</span><span class="p">)</span>
+<span class="n">sa_ntrc_inactive_100_3</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl3_mk_v1.1.sa"</span><span class="p">)</span>
 
-<span class="n">sa_ntrc_active_100_1_3di</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl1_3di.sa"</span><span class="p">)</span>
-<span class="n">sa_ntrc_active_100_2_3di</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl2_3di.sa"</span><span class="p">)</span>
-<span class="n">sa_ntrc_active_100_3_3di</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl3_3di.sa"</span><span class="p">)</span>
+<span class="n">sa_ntrc_active_100_1_3di</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl1_3di_v1.1.sa"</span><span class="p">)</span>
+<span class="n">sa_ntrc_active_100_2_3di</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl2_3di_v1.1.sa"</span><span class="p">)</span>
+<span class="n">sa_ntrc_active_100_3_3di</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_active_repl3_3di_v1.1.sa"</span><span class="p">)</span>
 
-<span class="n">sa_ntrc_inactive_100_1_3di</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl1_3di.sa"</span><span class="p">)</span>
-<span class="n">sa_ntrc_inactive_100_2_3di</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl2_3di.sa"</span><span class="p">)</span>
-<span class="n">sa_ntrc_inactive_100_3_3di</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl3_3di.sa"</span><span class="p">)</span>
+<span class="n">sa_ntrc_inactive_100_1_3di</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl1_3di_v1.1.sa"</span><span class="p">)</span>
+<span class="n">sa_ntrc_inactive_100_2_3di</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl2_3di_v1.1.sa"</span><span class="p">)</span>
+<span class="n">sa_ntrc_inactive_100_3_3di</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="s2">"data_NtrC/encoded_NtrC_inactive_repl3_3di_v1.1.sa"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
